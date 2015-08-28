@@ -7,7 +7,6 @@
 #include "TileEdgeMesh.h"
 #include "MyShaderCallBack.h"
 #include "CBatchingMesh.h"
-#include "QString"
 
 #define INFINITE 32536;
 
@@ -135,76 +134,45 @@ int DUMMYFUNCTION(int tiletype)//template func
 }
 
 
-QString TileName(int tiletype)
+core::string<char> TileName(int tiletype)
 {
     switch (tiletype)
     {
     case TILE_TYPES::CRATER1:
-        return QString("Crater 1");
+        return "Crater 1";
         break;
 
     case TILE_TYPES::CRATER2:
-        return QString("Crater 2");
+        return "Crater 2";
         break;
 
     case TILE_TYPES::ROCKS:
-        return QString("Rocks");
+        return "Rocks";
         break;
 
     case TILE_TYPES::SEDIMENT1:
-        return QString("Sedimentary (sand)");
+        return "Sedimentary (sand)";
         break;
 
     case TILE_TYPES::SEDIMENT2:
-        return QString("Sedimentary (lime)");
+        return "Sedimentary (lime)";
         break;
 
     case TILE_TYPES::MOUNTAINS:
-        return QString("Mountains");
+        return "Mountains";
         break;
 
     case TILE_TYPES::HILLS:
-        return QString("Old Mountains");
+        return "Old Mountains";
         break;
 
     case TILE_TYPES::BARREN:
-        return QString("Barren land");
+        return "Barren land";
         break;
 
-    case TILE_TYPES::BASALT_ROCKS:
-        return QString("Rocky basalts");
-        break;
-
-    case TILE_TYPES::BASALT:
-        return QString("Basaltic planes");
-        break;
-
-    case TILE_TYPES::CHANNELS:
-        return QString("Lava channels");
-        break;
-
-    case TILE_TYPES::LAVA:
-        return QString("Old lava");
-        break;
-
-    case TILE_TYPES::RIFT:
-        return QString("Rift Mountains");
-        break;
-
-    case TILE_TYPES::VOLCANO:
-        return QString("Volcano");
-        break;
-
-    case TILE_TYPES::PERMAFROST:
-        return QString("Permafrost");
-        break;
-
-    case TILE_TYPES::POLAR:
-        return QString("Polar ice");
-        break;
 
     default:
-        return 0;
+        return "";
         break;
 
     }

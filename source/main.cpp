@@ -12,8 +12,8 @@
 #include "GameManager.h"
 #include "DRandom.h"
 
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 800
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
 
 using namespace core;
 using namespace scene;
@@ -45,7 +45,7 @@ int IRRCALLCONV main(int argc, char* argv[])
 
     MyEventReceiver receiver; // класс обработчика событий, описан в своём h-файле.
 
-    device =  createDevice( video::EDT_OPENGL, dimension2d<u32>(SCREEN_WIDTH, SCREEN_HEIGHT), 32,  true, true, false, &receiver);
+    device =  createDevice( video::EDT_OPENGL, dimension2d<u32>(SCREEN_WIDTH, SCREEN_HEIGHT), 32,  false, true, false, &receiver);
     if (!device) return 1;
     /* Создали контекст и окно OpenGL средствами Irrlicht.
      * 32 бита.

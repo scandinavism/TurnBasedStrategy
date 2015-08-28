@@ -3,7 +3,6 @@
 
 #include "irrlicht.h"
 #include "DGameMap.h"
-#include <QMessageBox>
 
 
 struct PathNode
