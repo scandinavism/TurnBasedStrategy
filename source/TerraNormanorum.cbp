@@ -3,12 +3,13 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="TerraNormanorum" />
+		<Option execution_dir="../bin/Release" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Release">
 				<Option output="../bin/Release/TerraNormanorum" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="D:/Qt/irrlicht-1.8.1/bin/Win32-gcc" />
+				<Option working_dir="../bin/Release/" />
 				<Option object_output="../obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />

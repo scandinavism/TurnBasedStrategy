@@ -147,7 +147,7 @@
 
 1440183881 d:\qt\irrlicht-1.8.1\include\eprimitivetypes.h
 
-1440777466 source:d:\src\terranormanorum\main.cpp
+1440871026 source:d:\src\terranormanorum\main.cpp
 	"myeventreceiver.h"
 	"TileMesh.h"
 	"WaterTileMesh.h"
@@ -1027,13 +1027,14 @@
 	"irrlicht.h"
 	"DGameMap.h"
 
-1440762283 d:\src\terranormanorum\dgamemap.h
+1440871296 d:\src\terranormanorum\dgamemap.h
 	"irrlicht.h"
 	"TileMesh.h"
 	"TileCornerMesh.h"
 	"TileEdgeMesh.h"
 	"MyShaderCallBack.h"
 	"CBatchingMesh.h"
+	"DRandom.h"
 
 1440762203 d:\src\terranormanorum\pathfinding.h
 	"irrlicht.h"

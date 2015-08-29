@@ -7,8 +7,11 @@
 #include "TileEdgeMesh.h"
 #include "MyShaderCallBack.h"
 #include "CBatchingMesh.h"
+#include "DRandom.h"
 
-#define INFINITE 32536;
+
+#define INFINITE 32536
+#define NEWWORLDSEEDS 21
 
 using namespace irr;
 using namespace video;
@@ -17,29 +20,46 @@ using namespace scene;
 using namespace io;
 using namespace gui;
 
+struct Coord
+{
+    int x;
+    int y;
+};
+
 
 
 namespace TILE_TYPES
 {
-const int CRATER1 = 0;
-const int CRATER2 = 1;
-const int ROCKS = 2;
-const int SEDIMENT1 = 3;
-const int SEDIMENT2 = 4;
-const int MOUNTAINS = 5;
-const int HILLS = 6;
-const int BARREN = 7;
-const int BASALT_ROCKS = 8;
-const int BASALT = 9;
-const int CHANNELS = 10;
-const int LAVA = 11;
-const int RIFT = 12;
-const int VOLCANO = 13;
+const int TUNDRA = 0;
+const int TAIGA = 1;
+const int COLD = 2;
+const int TEMPERATE = 3;
+const int ARID = 4;
+const int SPRUCE = 5;
+const int PINE = 6;
+const int BIRCH = 7;
+const int HILLS_COLD = 8;
+const int HILLS_WARM = 9;
+const int SWAMP = 10;
+const int MOUNTAINS = 11;
+const int BEACH = 12;
+const int SEA = 13;
 const int PERMAFROST = 14;
 const int POLAR = 15;
 }
 
 const int ID_IsNotPickable = 0;
+
+float My_ATan ( int x, int y)
+{
+    float atan_;
+    if (y!=0) atan_ = atanf(fabs((float)y)/fabs((float)x)); else atan_ = 0.0;
+
+    if (x<0) atan_ = PI - atan_;
+    if (y<0) atan_ = 2*PI-atan_;
+
+   return atan_;
+}
 
 bool BoundaryCheck (int x, int y, int left, int right, int top, int bottom)
 {
@@ -61,23 +81,47 @@ int DUMMYFUNCTION(int tiletype)//template func
 {
     switch (tiletype)
     {
-    case TILE_TYPES::CRATER1:
+    case TILE_TYPES::TUNDRA:
         return 0;
         break;
 
-    case TILE_TYPES::CRATER2:
+    case TILE_TYPES::TAIGA:
         return 0;
         break;
 
-    case TILE_TYPES::ROCKS:
+    case TILE_TYPES::COLD:
         return 0;
         break;
 
-    case TILE_TYPES::SEDIMENT1:
+    case TILE_TYPES::TEMPERATE:
         return 0;
         break;
 
-    case TILE_TYPES::SEDIMENT2:
+    case TILE_TYPES::ARID:
+        return 0;
+        break;
+
+    case TILE_TYPES::SPRUCE:
+        return 0;
+        break;
+
+    case TILE_TYPES::PINE:
+        return 0;
+        break;
+
+    case TILE_TYPES::BIRCH:
+        return 0;
+        break;
+
+    case TILE_TYPES::HILLS_COLD:
+        return 0;
+        break;
+
+    case TILE_TYPES::HILLS_WARM:
+        return 0;
+        break;
+
+    case TILE_TYPES::SWAMP:
         return 0;
         break;
 
@@ -85,35 +129,11 @@ int DUMMYFUNCTION(int tiletype)//template func
         return 0;
         break;
 
-    case TILE_TYPES::HILLS:
+    case TILE_TYPES::BEACH:
         return 0;
         break;
 
-    case TILE_TYPES::BARREN:
-        return 0;
-        break;
-
-    case TILE_TYPES::BASALT_ROCKS:
-        return 0;
-        break;
-
-    case TILE_TYPES::BASALT:
-        return 0;
-        break;
-
-    case TILE_TYPES::CHANNELS:
-        return 0;
-        break;
-
-    case TILE_TYPES::LAVA:
-        return 0;
-        break;
-
-    case TILE_TYPES::RIFT:
-        return 0;
-        break;
-
-    case TILE_TYPES::VOLCANO:
+    case TILE_TYPES::SEA:
         return 0;
         break;
 
@@ -138,38 +158,69 @@ core::string<char> TileName(int tiletype)
 {
     switch (tiletype)
     {
-    case TILE_TYPES::CRATER1:
-        return "Crater 1";
+    case TILE_TYPES::TUNDRA:
+        return "Tundra";
         break;
 
-    case TILE_TYPES::CRATER2:
-        return "Crater 2";
+    case TILE_TYPES::TAIGA:
+        return "Taiga";
         break;
 
-    case TILE_TYPES::ROCKS:
-        return "Rocks";
+    case TILE_TYPES::COLD:
+        return "Cold";
         break;
 
-    case TILE_TYPES::SEDIMENT1:
-        return "Sedimentary (sand)";
+    case TILE_TYPES::TEMPERATE:
+        return "Temperate";
         break;
 
-    case TILE_TYPES::SEDIMENT2:
-        return "Sedimentary (lime)";
+    case TILE_TYPES::ARID:
+        return "Arid";
+        break;
+
+    case TILE_TYPES::SPRUCE:
+        return "Spruce";
+        break;
+
+    case TILE_TYPES::PINE:
+        return "Pine";
+        break;
+
+    case TILE_TYPES::BIRCH:
+        return "Birch";
+        break;
+
+    case TILE_TYPES::HILLS_COLD:
+        return "Hills";
+        break;
+
+    case TILE_TYPES::HILLS_WARM:
+        return "Hills";
+        break;
+
+    case TILE_TYPES::SWAMP:
+        return "Swamp";
         break;
 
     case TILE_TYPES::MOUNTAINS:
         return "Mountains";
         break;
 
-    case TILE_TYPES::HILLS:
-        return "Old Mountains";
+    case TILE_TYPES::BEACH:
+        return "Shore";
         break;
 
-    case TILE_TYPES::BARREN:
-        return "Barren land";
+    case TILE_TYPES::SEA:
+        return "Sea";
         break;
 
+    case TILE_TYPES::PERMAFROST:
+        return "Permafrost";
+        break;
+
+    case TILE_TYPES::POLAR:
+        return "Polar";
+        break;
 
     default:
         return "";
@@ -183,59 +234,59 @@ int getBaseMovementCost(int tiletype)//template func
 {
     switch (tiletype)
     {
-    case TILE_TYPES::CRATER1:
+    case TILE_TYPES::TUNDRA:
         return 1;
         break;
 
-    case TILE_TYPES::CRATER2:
+    case TILE_TYPES::TAIGA:
         return 2;
         break;
 
-    case TILE_TYPES::ROCKS:
+    case TILE_TYPES::COLD:
         return 10;
         break;
 
-    case TILE_TYPES::SEDIMENT1:
+    case TILE_TYPES::TEMPERATE:
         return 5;
         break;
 
-    case TILE_TYPES::SEDIMENT2:
+    case TILE_TYPES::ARID:
+        return 2;
+        break;
+
+    case TILE_TYPES::SPRUCE:
+        return 4;
+        break;
+
+    case TILE_TYPES::PINE:
+        return 3;
+        break;
+
+    case TILE_TYPES::BIRCH:
+        return 1;
+        break;
+
+    case TILE_TYPES::HILLS_COLD:
+        return 2;
+        break;
+
+    case TILE_TYPES::HILLS_WARM:
+        return 1;
+        break;
+
+    case TILE_TYPES::SWAMP:
         return 2;
         break;
 
     case TILE_TYPES::MOUNTAINS:
-        return 4;
-        break;
-
-    case TILE_TYPES::HILLS:
         return 3;
         break;
 
-    case TILE_TYPES::BARREN:
-        return 1;
-        break;
-
-    case TILE_TYPES::BASALT_ROCKS:
-        return 2;
-        break;
-
-    case TILE_TYPES::BASALT:
-        return 1;
-        break;
-
-    case TILE_TYPES::CHANNELS:
-        return 2;
-        break;
-
-    case TILE_TYPES::LAVA:
-        return 3;
-        break;
-
-    case TILE_TYPES::RIFT:
+    case TILE_TYPES::BEACH:
         return 4;
         break;
 
-    case TILE_TYPES::VOLCANO:
+    case TILE_TYPES::SEA:
         return 5;
         break;
 
@@ -312,86 +363,45 @@ public:
     TileInfo** TileMap;
 
 
-    void setIMeshTexture (IMesh* mesh, int textureLayer, int tiletype)
+void FloodFill(Coord start)
+{
+
+// Sorry, but I will not check for array limits, 'cause we have margins and so on...
+
+    if (TileMap[start.x][start.y].Height!=2)
     {
+            TileMap[start.x][start.y].Height=2;
+            Coord temp;
 
-        ITexture* texture;
+            temp.x = UNbrI(start.x,start.y);
+            temp.y = UNbrJ(start.x,start.y);
+            FloodFill (temp);
 
-        switch (tiletype)
-        {
-        case TILE_TYPES::CRATER1:
-            texture = driver->getTexture("assets/textures/crater1/1.jpg");
-            break;
-
-        case TILE_TYPES::CRATER2:
-            texture = driver->getTexture("assets/textures/crater2/1.jpg");
-            break;
-
-        case TILE_TYPES::ROCKS:
-            texture = driver->getTexture("assets/textures/rocks/1.jpg");
-            break;
-
-        case TILE_TYPES::SEDIMENT1:
-            texture = driver->getTexture("assets/textures/sediment1/1.jpg");
-            break;
-
-        case TILE_TYPES::SEDIMENT2:
-            texture = driver->getTexture("assets/textures/sediment2/1.jpg");
-            break;
-
-        case TILE_TYPES::MOUNTAINS:
-            texture = driver->getTexture("assets/textures/mountains/1.jpg");
-            break;
-
-        case TILE_TYPES::HILLS:
-            texture = driver->getTexture("assets/textures/hills/1.jpg");
-            break;
-
-        case TILE_TYPES::BARREN:
-            texture = driver->getTexture("assets/textures/barren/1.jpg");
-            break;
-
-        case TILE_TYPES::BASALT_ROCKS:
-            texture = driver->getTexture("assets/textures/basalt_rocks/1.jpg");
-            break;
-
-        case TILE_TYPES::BASALT:
-            texture = driver->getTexture("assets/textures/basalt/1.jpg");
-            break;
-
-        case TILE_TYPES::CHANNELS:
-            texture = driver->getTexture("assets/textures/channels/1.jpg");
-            break;
-
-        case TILE_TYPES::LAVA:
-            texture = driver->getTexture("assets/textures/lava/1.jpg");
-            break;
-
-        case TILE_TYPES::RIFT:
-            texture = driver->getTexture("assets/textures/rift/1.jpg");
-            break;
-
-        case TILE_TYPES::VOLCANO:
-            texture = driver->getTexture("assets/textures/volcano/1.jpg");
-            break;
-
-        case TILE_TYPES::PERMAFROST:
-            texture = driver->getTexture("assets/textures/permafrost/1.jpg");
-            break;
-
-        case TILE_TYPES::POLAR:
-            texture = driver->getTexture("assets/textures/polar/1.jpg");
-            break;
-
-        default:
-            texture = driver->getTexture("assets/shared/exclusion.png");
-            break;
-        }
+            temp.x = URNbrI(start.x,start.y);
+            temp.y = URNbrJ(start.x,start.y);
+            FloodFill (temp);
 
 
-        mesh->getMeshBuffer(0)->getMaterial().setTexture(textureLayer, texture);
+            temp.x = LRNbrI(start.x,start.y);
+            temp.y = LRNbrJ(start.x,start.y);
+            FloodFill (temp);
 
+
+            temp.x = LNbrI(start.x,start.y);
+            temp.y = LNbrJ(start.x,start.y);
+            FloodFill (temp);
+
+
+            temp.x = LLNbrI(start.x,start.y);
+            temp.y = LLNbrJ(start.x,start.y);
+            FloodFill (temp);
+
+
+            temp.x = ULNbrI(start.x,start.y);
+            temp.y = ULNbrJ(start.x,start.y);
+            FloodFill (temp);
     }
+}
 
 
     VisibleMap(ISceneManager* _smgr,IVideoDriver* _driver,ILightSceneNode *_lightNode, u32 *_ticker, ShaderWrapper *_MyShaders)
@@ -421,13 +431,136 @@ public:
         for( int i = 0 ; i < I_SIZE/I_CHUNKSIZE ; i++ )
             trees[i] = new IMeshSceneNode* [J_SIZE/J_CHUNKSIZE];
 
+/******************************* MAP GENERATION ********************************************************/
+
+       // first of all, let's flood all map with water
 
         for (int i=0; i<I_SIZE; i++)
             for (int j=0; j<J_SIZE; j++)
-            {
+                       TileMap[i][j].Height= 0;
 
-                TileMap[i][j].Height= (rand()%24>=17)?2:0;
+
+       //then, let's start with continent creation
+       // "New World will go first. It took space from 0 to 3*I_SIZE/8 horizontally and all the way vertically
+       // We will throw 7 random points in that range, to define it's shape
+
+       int MARGINX = 5; // tiles won't be allowed to be a land tile closer to boundaries than this value
+        int MARGINY = 8;
+
+        Coord SeedTiles[NEWWORLDSEEDS];
+        DRandom *mapRandom = new DRandom(8858776543);//should be truly randomized at release! now seed's fixed for development reasons
+
+        int RANGEX = 3*I_SIZE/8 - 2*MARGINX;
+        int RANGEY = J_SIZE - 2*MARGINY;
+
+        for (int i=0;i<NEWWORLDSEEDS;i++)
+        {
+                SeedTiles[i].x = (int)round(mapRandom->Get()*RANGEX) + MARGINX;
+                SeedTiles[i].y = (int)round(mapRandom->Get()*RANGEY) + MARGINY;
+
+                 TileMap[SeedTiles[i].x][SeedTiles[i].y].Height=2;
+                //temp
+        }
+
+        //now we should create a polygon with given points as vertices
+        //i don't need a convex hull. so I just need to sort my vertices according to their
+        //direction, i.e. angle of vector from the center to one of them.
+
+        //so, first, we should find a centroid.
+
+        Coord center;
+
+        center.x = 0;
+        center.y = 0;
+
+        for (int i=0;i<NEWWORLDSEEDS;i++)
+        {
+            center.x+=SeedTiles[i].x;
+            center.y+=SeedTiles[i].y;
+        }
+
+        center.x = center.x/NEWWORLDSEEDS;
+        center.y = center.y/NEWWORLDSEEDS;
+        // shouldn't I convert it to float?
+
+        //now, as we know center, let's sort the vertices;
+        //As soon as the number of vertices is rather small
+        //we don't need advanced sorts, eh?
+
+        Coord NewSeeds[NEWWORLDSEEDS];
+
+
+
+        for (int j=0;j<NEWWORLDSEEDS;j++)
+
+        {
+        float minangle = 2*PI;
+        int minnumber = -1;
+
+        for (int i=0;i<NEWWORLDSEEDS;i++)
+        if (SeedTiles[i].x>0) // I  use this as a flag that vertex wasn't sorted yet;
+        {
+            int vecx = SeedTiles[i].x-center.x;
+            int vecy = SeedTiles[i].y-center.y;
+
+            float angle = My_ATan (vecx,vecy);
+            // arctangent function with adjustments for 0 -- 2PI  range
+
+            if (angle<minangle) {minangle=angle; minnumber=i;}
+        }
+
+        NewSeeds[j].x = SeedTiles[minnumber].x;
+        NewSeeds[j].y = SeedTiles[minnumber].y;
+
+        SeedTiles[minnumber].x = -1; //here I set aforementioned flag
+        }
+
+        //now we have an array of sorted vertices and we should flood fill this polygon
+        //but, at first we should "draw", i.e, set valid height for polygon sides;
+
+
+        for (int i=0;i<NEWWORLDSEEDS;i++)
+        {
+            Coord start = NewSeeds[i];
+            Coord finish = NewSeeds[(i+1)%NEWWORLDSEEDS];
+
+            //  to draw a line we need to find a hexdistance
+            // I'll just copy a snippet from the same implementation
+            // in PathFinding module
+
+
+            int startx = start.x;
+            int startz = start.y - (start.x- (start.x%2))/2;
+            int starty = -startx-startz;
+
+            int finishx = finish.x ;
+            int finishz = finish.y - (finish.x - (finish.x%2))/2;
+            int finishy = -finishx-finishz;
+
+            int distance = (abs(startx-finishx)+abs(starty-finishy)+abs(startz-finishz))/2;
+
+            //then, evenly interpolate DISTANCE+1 points between start and finish
+            // I'll use my standart Hex2Pixel and Pixel2Hex functions
+
+            for (int jj=0;jj<=distance;jj++)
+            {
+                float PointX = Hex2PixelX(start.x,start.y) + (Hex2PixelX(finish.x,finish.y) - Hex2PixelX(start.x,start.y)) * 1.0/distance * jj;
+                float PointY = Hex2PixelY(start.x,start.y) + (Hex2PixelY(finish.x,finish.y) - Hex2PixelY(start.x,start.y)) * 1.0/distance * jj;
+
+                TileMap[Pixel2HexX(PointX,PointY)][Pixel2HexY(PointX,PointY)].Height = 2;
+
             }
+
+
+
+        }
+
+        //and now, we may flood-fill,starting from center, using a recursive function
+        FloodFill(center);
+
+
+
+
 
         for (int i=0; i<I_SIZE; i++)
             for (int j=0; j<J_SIZE; j++)
@@ -454,9 +587,9 @@ public:
             for (int j=0; j<J_SIZE; j++)
                 switch (TileMap[i][j].Height)
             {
-                case 0:   TileMap[i][j].TerrainType = 2; break;
-                case 1:   TileMap[i][j].TerrainType = 3; break;
-                case 2:   TileMap[i][j].TerrainType = 0; break;
+                case 0:   TileMap[i][j].TerrainType = TILE_TYPES::SEA ; break;
+                case 1:   TileMap[i][j].TerrainType = TILE_TYPES::BEACH ; break;
+                case 2:   TileMap[i][j].TerrainType = TILE_TYPES::ARID ; break;
             }
 
         for (int a=0; a<I_SIZE/I_CHUNKSIZE; a++)
