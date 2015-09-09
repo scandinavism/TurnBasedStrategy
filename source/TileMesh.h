@@ -3,14 +3,14 @@
 
 #include "irrlicht.h"
 
-#define I_SIZE 240
+#define I_SIZE 160
 #define J_SIZE 80
 
 #define I_CHUNKSIZE 20
 #define J_CHUNKSIZE 10
 
-//256 = 25*10
-//80 = 16*5
+//160 = 20*8 = 16*10
+//80 = 10*8 = 16*5
 
 using namespace irr;
 using namespace video;
