@@ -7,7 +7,7 @@
 
 #define TEXTUREFACTOR 0.75
 
-#define deepness 0.1
+#define deepness 0.05
 
 using namespace irr;
 using namespace video;
